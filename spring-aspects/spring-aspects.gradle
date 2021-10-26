@@ -8,7 +8,7 @@ sourceSets.main.java.srcDirs = files()
 sourceSets.test.aspectj.srcDir "src/test/java"
 sourceSets.test.java.srcDirs = files()
 
-aspectj.version = dependencyManagement.managedVersions['org.aspectj:aspectjweaver']
+//aspectj.version = dependencyManagement.managedVersions['org.aspectj:aspectjweaver']
 
 dependencies {
 	api("org.aspectj:aspectjweaver")
