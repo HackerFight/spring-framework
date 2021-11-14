@@ -154,5 +154,4 @@ public class RuntimeBeanReference implements BeanReference {
 	public String toString() {
 		return '<' + getBeanName() + '>';
 	}
-
 }

@@ -74,32 +74,47 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private static final int SUPPRESSED_EXCEPTIONS_LIMIT = 100;
 
 
+	/**
+	 * 一级缓存
+	 */
 	/** Cache of singleton objects: bean name to bean instance. */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
+	/**
+	 * 三级缓存
+	 */
 	/** Cache of singleton factories: bean name to ObjectFactory. */
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
+	/**
+	 * 二级缓存
+	 */
 	/** Cache of early singleton objects: bean name to bean instance. */
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
+
 	/** Set of registered singletons, containing the bean names in registration order. */
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
+
 
 	/** Names of beans that are currently in creation. */
 	private final Set<String> singletonsCurrentlyInCreation =
 			Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
+
 	/** Names of beans currently excluded from in creation checks. */
 	private final Set<String> inCreationCheckExclusions =
 			Collections.newSetFromMap(new ConcurrentHashMap<>(16));
+
 
 	/** Collection of suppressed Exceptions, available for associating related causes. */
 	@Nullable
 	private Set<Exception> suppressedExceptions;
 
+
 	/** Flag that indicates whether we're currently within destroySingletons. */
 	private boolean singletonsCurrentlyInDestruction = false;
+
 
 	/** Disposable bean instances: bean name to disposable instance. */
 	private final Map<String, Object> disposableBeans = new LinkedHashMap<>();

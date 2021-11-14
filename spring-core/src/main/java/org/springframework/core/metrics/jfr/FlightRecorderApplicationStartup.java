@@ -53,8 +53,9 @@ public class FlightRecorderApplicationStartup implements ApplicationStartup {
 	public StartupStep start(String name) {
 		long sequenceId = this.currentSequenceId.incrementAndGet();
 		this.currentSteps.offerFirst(sequenceId);
-		return new FlightRecorderStartupStep(sequenceId, name,
-				this.currentSteps.getFirst(), committedStep -> this.currentSteps.removeFirstOccurrence(sequenceId));
+//		return new FlightRecorderStartupStep(sequenceId, name,
+//				this.currentSteps.getFirst(), committedStep -> this.currentSteps.removeFirstOccurrence(sequenceId));
+		return null;
 	}
 
 }
