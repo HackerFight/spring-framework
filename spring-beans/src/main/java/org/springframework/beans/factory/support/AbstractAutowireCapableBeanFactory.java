@@ -610,6 +610,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+
+			/**
+			 * 添加到三级缓存中，value 是一个匿名函数（lambda 表达式）
+			 * 主意：getEarlyBeanReference() 这里是不执行的，只有当调用这个匿名函数的
+			 * getObject() 方法时，这个方法才会执行
+			 */
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
