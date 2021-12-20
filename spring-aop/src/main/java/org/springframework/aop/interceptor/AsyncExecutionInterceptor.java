@@ -110,6 +110,11 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 					"No executor specified and no default executor set on AsyncExecutionInterceptor either");
 		}
 
+		/**
+		 * 这里实际上就是一个匿名函数
+		 * 当执行到118行的时候，内部的 call 方法此时还不会执行，因为没有触发
+		 * 接着主线程继续执行 doSubmit 方法
+		 */
 		Callable<Object> task = () -> {
 			try {
 				Object result = invocation.proceed();
@@ -126,6 +131,12 @@ public class AsyncExecutionInterceptor extends AsyncExecutionAspectSupport imple
 			return null;
 		};
 
+		/**
+		 * 这里的task 就是上面的匿名函数
+		 * 这里面将会触发上面的 call 方法
+		 *
+		 * 可以分别在 118，120，140 行打一个断点，可以看下执行顺序
+		 */
 		return doSubmit(task, executor, invocation.getMethod().getReturnType());
 	}
 

@@ -336,6 +336,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					 *
 					 * getSingleton() 里面会表明当前bean 是正在创建中。。。
 					 *
+					 * 执行完 createBean() 方法之后，会继续执行 getSingleton()方法里面的
+					 * getObject() 方法后面的内容
 					 */
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
