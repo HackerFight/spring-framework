@@ -241,6 +241,12 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	}
 
 
+	/**
+	 * 实例化之后，属性赋值之前调用这个方法
+	 * 将会去解析 @Autowired, @Value 注解的值，然后缓存
+	 * 属性赋值的时候，再去解析
+	 * {@link postProcessProperties}
+	 */
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, beanType, null);
@@ -473,6 +479,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
+					/**
+					 * 不难发现，如果@Autowired @Value 注入的值是static 的，则将会跳出，不进行解析，不会报错
+					 */
 					if (Modifier.isStatic(field.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
