@@ -58,6 +58,21 @@ public abstract class AopConfigUtils {
 
 	static {
 		// Set up the escalation list...
+
+		/**
+		 * 优先级从低到高
+		 *
+		 * @see InfrastructureAdvisorAutoProxyCreator 基础的Aop处理器
+		 *
+		 * @see AspectJAwareAdvisorAutoProxyCreator  以前基于xml配置aop的时候好像会使用它
+		 *
+		 * @see AnnotationAwareAspectJAutoProxyCreator 注解版的，是上面的子类 @EnableAspectJAutoProxy 注解打开会使用它
+		 *
+		 * 如果先有了优先级最高的，那么在定义优先级低的时候就不用定义了，就直接使用优先级高的
+		 *
+		 * 这三个真正核心的类，是他们的父类
+		 * @see AbstractAutoProxyCreator
+		 */
 		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);

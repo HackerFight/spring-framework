@@ -102,6 +102,10 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 		if (!this.active) {
 			activate();
 		}
+
+		/**
+		 * 这个this, 就是前面步骤new 的 ProxyFactory （这里面有增强器）
+		 */
 		return getAopProxyFactory().createAopProxy(this);
 	}
 

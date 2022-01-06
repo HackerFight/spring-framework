@@ -223,6 +223,10 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
+
+		/**
+		 * 从 Pointcut 中获取 ClassFilter, 去过滤当前类，是否符合需要增强
+		 */
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
@@ -281,10 +285,32 @@ public abstract class AopUtils {
 	 * @return whether the pointcut can apply on any method
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
+
+		/**
+		 * 判断增强器的类型
+		 * 如果是 IntroductionAdvisor 类型，则直接判断 ClassFilter 的 matches 方法
+		 *   如果 matches() == true,  当前遍历的候选增强器就是可用的增强器
+		 *   如果 matches() == false, 当前遍历的候选增强器就不是可用的增强器
+		 *
+		 * 一般来说，AOP 基础模型是：
+		 *  一个增强器Advisor, 内部有一个通知Advice, 和一个切点Pointcut
+		 *  切点Pointcut 包含一个 ClassFilter 和 一个 MethodMatcher
+		 *
+		 *  Advisor
+		 *    -- Advice
+		 *    -- Pointcut
+		 *         --- ClassFilter
+		 *         --- MethodMatcher
+		 *
+		 *  如果是 IntroductionAdvisor 类型，则可以直接调用 ClassFilter的 方法，不用再去获取Pointcut
+		 */
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
 		else if (advisor instanceof PointcutAdvisor) {
+			/**
+			 * 说明是Pointcut 类型
+			 */
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
@@ -306,9 +332,14 @@ public abstract class AopUtils {
 		if (candidateAdvisors.isEmpty()) {
 			return candidateAdvisors;
 		}
+		//保存所有符合条件的增强器
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
+
+		//遍历所有的候选增强器
 		for (Advisor candidate : candidateAdvisors) {
+			//判断增强器类型 && 是否能应用
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
+				//如果有，则就是符合条件的增强器，保存起来
 				eligibleAdvisors.add(candidate);
 			}
 		}
@@ -318,7 +349,10 @@ public abstract class AopUtils {
 				// already processed
 				continue;
 			}
+
+			//是否能应用
 			if (canApply(candidate, clazz, hasIntroductions)) {
+				//能应用就是符合条件的增强器，保存起来
 				eligibleAdvisors.add(candidate);
 			}
 		}

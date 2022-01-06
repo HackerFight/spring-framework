@@ -70,6 +70,10 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		if (advisorNames == null) {
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the auto-proxy creator apply to them!
+
+			/**
+			 * 第一次执行，上面为空肯定成立，然后就去 bean 定义容器中查找 Advisor(增强器）
+			 */
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			this.cachedAdvisorBeanNames = advisorNames;
@@ -80,6 +84,10 @@ public class BeanFactoryAdvisorRetrievalHelper {
 
 		List<Advisor> advisors = new ArrayList<>();
 		for (String name : advisorNames) {
+			/**
+			 * 如果使用的是基础的AOP 后置处理器（ InfrastructureAdvisorAutoProxyCreator ）
+			 * 则需要对定义的增强器添加角色：BeanDefinition.ROLE_INFRASTRUCTURE
+			 */
 			if (isEligibleBean(name)) {
 				if (this.beanFactory.isCurrentlyInCreation(name)) {
 					if (logger.isTraceEnabled()) {
@@ -88,6 +96,10 @@ public class BeanFactoryAdvisorRetrievalHelper {
 				}
 				else {
 					try {
+						/**
+						 * 去容器中获取（创建）增强器
+						 * 这个增强器获取到后，就会一直在整个IOC容器中使用
+						 */
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {

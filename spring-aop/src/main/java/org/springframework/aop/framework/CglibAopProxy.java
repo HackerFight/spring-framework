@@ -192,6 +192,18 @@ class CglibAopProxy implements AopProxy, Serializable {
 			enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
 			enhancer.setStrategy(new ClassLoaderAwareGeneratorStrategy(classLoader));
 
+			/**
+			 * 这个 Callback 是 org.springframework.cglib.proxy.Callback 包下的
+			 * 是在spring-core 模块下，不知道这里为什么没有
+			 *
+			 *
+			 * 这里返回的是一个数组，如果是数组，就需要配合 callbackFilter 来确定
+			 * 哪个 callback 工作
+			 *
+			 * CallbackFilter 的 accept() 方法，返回的就是 callbacks 数组中的元素索引
+			 * 返回哪个，工作的就是哪个
+			 * 一般都是 DynamicAdvisedInterceptor
+			 */
 			Callback[] callbacks = getCallbacks(rootClass);
 			Class<?>[] types = new Class<?>[callbacks.length];
 			for (int x = 0; x < types.length; x++) {
@@ -200,6 +212,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 			// fixedInterceptorMap only populated at this point, after getCallbacks call above
 			enhancer.setCallbackFilter(new ProxyCallbackFilter(
 					this.advised.getConfigurationOnlyCopy(), this.fixedInterceptorMap, this.fixedInterceptorOffset));
+
+
 			enhancer.setCallbackTypes(types);
 
 			// Generate the proxy class and create a proxy instance.
